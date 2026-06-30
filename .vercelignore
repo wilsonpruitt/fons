@@ -1,0 +1,5 @@
+tools
+client
+node_modules
+*.md
+.git

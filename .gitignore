@@ -1,0 +1,6 @@
+node_modules
+.vercel
+.DS_Store
+*.log
+# regenerable getbible download (8.4 MB); rebuild via tools/download-web.mjs
+tools/web.json

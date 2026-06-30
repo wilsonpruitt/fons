@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fons · Wroot Press</title>
+    <meta
+      name="description"
+      content="Chunked, addressable public-domain scripture text — the source the Wroot Press reading lenses point to."
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Crimson+Pro:wght@300;400;500&display=swap"
+    />
+    <style>
+      :root {
+        --ink: #2c2418;
+        --text: #4a3d30;
+        --muted: #8a7a6a;
+        --accent: #4a5a7a;
+        --card: #eee9df;
+        --border: #d4c9b5;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: #f5f0e8;
+        color: var(--ink);
+        font-family: "Crimson Pro", Georgia, serif;
+      }
+      header {
+        background: var(--ink);
+        color: #f5f0e8;
+        text-align: center;
+        padding: 60px 24px 50px;
+      }
+      header .marks { color: var(--accent); letter-spacing: 10px; font-size: 14px; margin-bottom: 14px; }
+      h1 {
+        font-family: "Cormorant Garamond", Georgia, serif;
+        font-size: 68px;
+        font-weight: 700;
+        letter-spacing: 16px;
+        margin: 0;
+      }
+      header .rule { width: 80px; height: 1px; background: var(--accent); margin: 16px auto; }
+      header .tag {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        color: #b9c2d6;
+        font-size: 19px;
+        letter-spacing: 2px;
+      }
+      main { max-width: 760px; margin: 0 auto; padding: 44px 24px 80px; }
+      p { font-size: 17px; line-height: 1.75; color: var(--text); }
+      h2 {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-top: 44px;
+      }
+      code, pre {
+        font-family: "SF Mono", ui-monospace, Menlo, monospace;
+        font-size: 13.5px;
+      }
+      pre {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        border-radius: 5px;
+        padding: 16px 18px;
+        overflow-x: auto;
+        color: var(--ink);
+      }
+      .demo {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 18px 22px;
+        margin-top: 16px;
+      }
+      .demo .ref {
+        font-family: "Cormorant Garamond", serif;
+        font-weight: 600;
+        font-size: 20px;
+        color: var(--accent);
+        margin-bottom: 8px;
+      }
+      .demo .verse { font-size: 16px; line-height: 1.7; }
+      .demo .vn {
+        font-size: 11px;
+        color: var(--muted);
+        vertical-align: super;
+        margin-right: 3px;
+      }
+      footer { text-align: center; color: var(--muted); font-size: 12px; letter-spacing: 1px; margin-top: 48px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="marks">&middot; &mdash; &middot;</div>
+      <h1>FONS</h1>
+      <div class="rule"></div>
+      <div class="tag">the source the lenses point to</div>
+    </header>
+    <main>
+      <p>
+        <em>Fons</em> &mdash; Latin for a spring, a wellhead &mdash; is the shared scripture
+        text behind the Wroot Press reading lenses. The Bible, public domain and chunked one
+        chapter to a file, served as plain JSON so any project can turn a citation into the
+        reading itself.
+      </p>
+
+      <h2>How to read it</h2>
+      <p>Every chapter is one small JSON file, addressed by translation, book, and chapter:</p>
+      <pre>GET /web/john/6.json
+GET /web/1-kings/14.json
+GET /web/psalms/110.json
+GET /web/_manifest.json   &larr; books, chapter counts, name aliases</pre>
+
+      <h2>From a project</h2>
+      <p>Drop in the one-file client and ask for a passage by its human reference:</p>
+      <pre>import { passage } from "@/lib/fons";
+
+const p = await passage("1 Kings 14:21&ndash;31");
+p.text     // "Rehoboam the son of Solomon reigned in Judah&hellip;"
+p.verses   // [{ v: 21, t: "&hellip;" }, &hellip;]</pre>
+
+      <h2>A live reading</h2>
+      <div class="demo" id="demo"><div class="ref">Loading&hellip;</div></div>
+
+      <footer>
+        World English Bible &middot; Public Domain &middot; getbible.net &middot; Wroot Press
+      </footer>
+    </main>
+
+    <script>
+      (async () => {
+        const el = document.getElementById("demo");
+        try {
+          const res = await fetch("/web/john/1.json");
+          const ch = await res.json();
+          const verses = ch.verses.slice(0, 5);
+          el.innerHTML =
+            '<div class="ref">' + ch.book + " " + ch.chapter + ":1&ndash;5</div>" +
+            '<div class="verse">' +
+            verses.map((v) => '<span class="vn">' + v.v + "</span>" + v.t).join(" ") +
+            "</div>";
+        } catch (e) {
+          el.innerHTML = '<div class="ref">Could not load the demo chapter.</div>';
+        }
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "fons",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Chunked, addressable public-domain scripture text for the Wroot Press reading lenses.",
+  "scripts": {
+    "download": "node tools/download-web.mjs",
+    "chunk": "node tools/build-chunks.mjs",
+    "serve": "node tools/serve.mjs"
+  }
+}
